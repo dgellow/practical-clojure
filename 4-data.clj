@@ -1,1 +1,1 @@
-;;
+;; this chapter describes every data type in clojure and many function to manipulate them
