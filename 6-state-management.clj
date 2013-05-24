@@ -103,3 +103,13 @@
 (print-contacts-and-initials my-contacts)
 
 
+;; Using atoms
+(def my-atom (atom 5))
+
+(deref my-atom) ;; => 5
+
+;; atom doesn't need a transaction to be updated
+(swap! my-atom + 3) ;; => 8
+
+(reset! my-atom 1) ;; => 1
+
