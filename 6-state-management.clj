@@ -113,3 +113,49 @@
 
 (reset! my-atom 1) ;; => 1
 
+
+;; Using agents
+(def my-agent (agent 5))
+
+(deref my-agent) ;; => 5
+
+;; An agent value can be updated using send or send-off function.
+;;
+;; send return immediately the agent value. The action function will be applied
+;; by another thread in the future.
+(deref (send my-agent + 3)) ;; => 5
+
+(deref my-agent) ;; => 8
+
+;; send-off has an identical behavior. It is expected to be use for actions
+;; spending time blocking on IO.
+
+;; A dedicated error-handling mechanism exists to manage asynchronously updates in
+;; separate thread.
+;;
+;; agents have one of two possible failure mode :fail or :continue.
+;;
+;; With the :continue mode, if an exception occurs, the agent executes an optional error-handler
+;; function and continues as if the action which fails never happened.
+;; While with the :fail mode the agent is put in a failed state and will not accept any more
+;; actions until it is restarted.
+;;
+;; Default is :continue if an error-handler function exists, else it's :fail.
+(error-mode my-agent) ;; => :fail
+(set-error-mode! my-agent :continue)
+(error-mode my-agent) ;; => :continue
+
+(set-error-handler! my-agent (fn [agnt ex] (do (println (agent-error an-agent)))))
+
+;; Managing agents failed state
+(def an-agent (agent 5))
+
+(deref an-agent) ;; => 5
+(agent-error an-agent) ;; => nil
+(send an-agent / 0) ;; 5
+(send an-agent + 1) ;; java.lang.RuntimeException: Agent is failed, needs restart
+(agent-error an-agent) ;; #<ArithmeticException java.langArithmeticException: Divide by zero>
+
+;; Leave the failed state and clear the actions queue
+(restart-agent my-agent @my-agent :clear-actions true)
+
