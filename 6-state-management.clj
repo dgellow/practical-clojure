@@ -159,3 +159,24 @@
 ;; Leave the failed state and clear the actions queue
 (restart-agent my-agent @my-agent :clear-actions true)
 
+
+
+
+;; To keep a track of states and identities two mechanism exist, validators and watches.
+;;
+;; validators are functions that can be attached to any identity and which validate any
+;; update before it is committed. If a value is not approved the state of the identity
+;; remains the same.
+(def my-ref (ref 5))
+(set-validator! my-ref (fn [x] (< 0 x)))
+
+(dosync (alter my-ref - 10)) ;; #<CompilerException java.lang.IllegalStateException:
+                             ;;   Invalid Reference State>
+
+(dosync (alter my-ref - 10) (alter my-ref + 15)) ;; => 10
+
+(set-validator! my-ref (fn [x] (== (rem x 5) 0)))
+(get-validator my-ref) ;; => fn
+
+(set-validator! my-ref nil)
+(get-validator my-ref) ;; => nil
