@@ -180,3 +180,14 @@
 
 (set-validator! my-ref nil)
 (get-validator my-ref) ;; => nil
+
+;; watches are functions called whenever a state changes.
+(defn my-watch [key identity old-val new-val]
+  (println (str "Old: " old-val))
+  (println (str "New: " new-val)))
+
+(def my-ref (ref 5))
+(add-watch my-ref "watch-println" my-watch)
+(dosync (alter my-ref inc)) ;; => 6
+
+(remove-watch my-ref "watch-println")
