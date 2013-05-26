@@ -59,3 +59,40 @@
   (:import (java.util Date Calendar)
            (java.io File FileInputStream)))
 
+
+;; Using namespaces metadata
+(ns #^{:doc "This is an email management library"
+       :author "Mr. Knuux <knu@ux.io>"}
+  mechoui.mail)
+
+
+;; Using private definition
+;; By default symbols are publicly accessible
+(defn- *my-private-println* [& more] (comment "..."))
+(def #^{:private true} *my-private-value* 123)
+
+
+;; Operations on namespaces
+;;
+;; *ns* is bound to the current namespace.
+;; all-ns function returns a sequence of namespaces currently defined.
+;; find-ns function takes a symbol and returns the namespace with that name and return
+;; nil if it doesn't exist.
+(find-ns 'clojure.core) ;; => #<Namespace clojure.core>
+
+;; the-ns function takes a namespace object or a symbol and throws an exception if it
+;; doesn't exist.
+;; ns-name function returns the name of a namespace as a symbol.
+;; ns-aliases function returns a map representing all aliases defined in a namespace.
+(ns-aliases 'clojure.core) ;; => {jio #<Namespace clojure.java.io>}
+
+;; ns-public function returns a map of all public vars.
+;; ns-interns function returns a map of all vars.
+;; ns-refers returns a map of all symbols referred from other namespaces.
+;; ns-imports returns a map of all imported java classes.
+;; ns-resolve function takes a namespace and a symbol and returns the var or class to
+;; which the symbol is mapped.
+(ns-resolve 'clojure.core 'BigDecimal) ;; => java.math.BigDecimal
+
+
+
