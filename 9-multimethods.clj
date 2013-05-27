@@ -185,3 +185,16 @@
 (move 6.022) ;; => "What?! Numbers don't move!"
 
 
+;; User-defined hierarchies
+;; make-hierarchy function returns a new hierarchy
+;; derive, isa?, parents, ancestors and descendants funcions all accept an extra first
+;; argument that specifies the hierarchy to use.
+(def my-hierarchy (-> (make-hierarchy)
+           (derive :one :base)
+           (derive :two :base)
+           (derive :three :two)))
+
+(isa? my-hierarchy :three :base) ;; => true
+
+;; The defmulti form accepts an optional argument, :hierarchy, followed by a different
+;; hierarchy to use.
