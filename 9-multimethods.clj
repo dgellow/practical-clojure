@@ -162,4 +162,26 @@
 (remove-method slay ::magical)
 
 
+;; Type tags
+;; type function looks for a :type metadata and returns that. If the object has
+;; not one, type returns the object's class.
+(type (with-meta {:name "Bob"} {:type ::person}))
+
+(def a (with-meta {:name "Arthur", :strength 8}
+                  {:type ::human}))
+(def b (with-meta {:name "Balfor", :strength 7}
+                  {:type ::elf}))
+
+;; move multimethod based on type
+(defmulti move type)
+(defmethod move ::human [creature]
+  (str (:name creature) " runs swiftly."))
+(defmethod move ::elf [creature]
+  (str (:name creature) " walks steadily."))
+(defmethod move Number [n]
+  (str "What ? Number don't move !"))
+
+(move a) ;; => "Arthur walks steadily."
+(move 6.022) ;; => "What?! Numbers don't move!"
+
 
