@@ -142,7 +142,24 @@
                          ;;      java.io.Serializable java.lang.Comparable}
 
 
+;; Dispatching conflicts
+(defmulti slay :species)
+(defmethod slay ::good [creature]
+  (str "Oh no ! A good creature was slain !"))
+(defmethod slay ::magical [creature]
+  (str "A magical creature was slain !"))
 
+;; b is an ::elf, so is also a ::good creature
+(slay b) ;; => java.lang.IllegalArgumentException:
+         ;;    Multiple methods in multimethod 'slay' match
+         ;;    dispatch value: :user/elf -> :user/magical
+         ;;    and :user/good, and neither is preferred
+
+;; prefer-method function values one implementation over other
+(prefer-method slay ::good ::magical) ;; ::good is preferred over ::magical
+
+;; remove-method function deletes an implementation
+(remove-method slay ::magical)
 
 
 
