@@ -69,11 +69,77 @@
   (str (:name creature) " speaks."))
 
 
+;; Hierarchies
+
+;; derive function creates a relation child -> parent
+;; isa? function test if a type is a child of another type
+;;
+;; factions
+(defn ->good [species]
+  (derive species ::good))
+
+(defn good? [species]
+  (isa? species ::good))
+
+(defn ->evil [species]
+  (derive species ::evil))
+
+(defn evil? [species]
+  (isa? species ::evil))
+
+;; creature type
+(defn ->magical [species]
+  (derive species ::magical))
+
+(defn magical? [species]
+  (isa? species ::magical))
+
+(defn ->hero [species]
+  (derive species ::hero))
+
+(defn hero? [species]
+  (isa? species ::hero))
 
 
+(map ->good [::human ::elf])
+(map ->evil [::orc])
+(map ->magical [::elf ::orc])
+(map ->hero [::human])
+
+;; Hierarchy querying
+(def species [::human ::elf ::orc])
+(map good? species) ;; => (true true false)
+(map evil? species) ;; => (false false true)
+(map magical? species) ;; => (false true true)
+(map hero? species) ;; => (true false false)
+;; parents function returns a set of immediate parents
+(parents ::orc) ;; => #{:user/magical :user/evil}
+(parents ::hero) ;; => #{:user/human}
+;; ancestors function returns a set of any parental level
+(ancestors ::hero) ;; => #{:user/good :user/human}
+;; descendants function returns a set of any child level
+(descendants ::good) ;; => #{:user/elf :user/hero :user/human}
 
 
+;; Dispatching works well with derived types ...
+(defmulti cast-spell :species)
+(defmethod cast-spell ::magical [creature]
+  (str (:name creature) " casts a spell."))
+(defmethod cast-spell :default [creature]
+  (str (:name creature) " tries to cast a spell but loosly fails."))
 
+;; ... and java classes.
+(defmulti invert class)
+(defmethod invert Number [x]
+  (- x))
+(defmethod invert String [x]
+  (apply str (reverse x)))
+
+(invert 3.141) ;; => -3.141
+(invert "hello") ;; => "olleh"
+
+(parents java.util.Date) ;; => #{java.lang.Object java.lang.Cloneable
+                         ;;      java.io.Serializable java.lang.Comparable}
 
 
 
