@@ -25,3 +25,32 @@
 ;; Static method can be call using class name/method name
 (Integer/parseInt "101") ;; => 101
 (Integer/MIN_VALUE) ;; => -2147483648
+
+;; Java arrays can be created with make-array function
+(make-array Double/TYPE 40) ;; create a double[40] array
+(make-array Double/TYPE 40 10) ;; create a double[40][10] 2d array
+
+;; There are functions to easily create primitive type arrays, such as int-array,
+;; long-array, double-array and float-array.
+;;
+;; to-array function converts a clojure collection type to an Object[] array
+;; to-array-2d does the same with a 2d collection
+(def matrix [[1 0 0][0 1 0][0 0 1]])
+(to-array-2d matrix) ;; => #<Object[][] [[Ljava.lang.Object;@7e0892c5>
+
+;; into-array function helps to get an array of the same type as the first item
+(into-array '(1 2 3 4)) ;; => #<Long[] [Ljava.lang.Long;@70eb4f20>
+(into-array Integer/TYPE '(1 2 3 4)) ;; => #<int[] [I@2388c8b6>
+
+;; aget function returns a value from an array
+(aget (into-array '(1 2 3 4)) 3) ;; => 4
+
+;; aset function sets an element of an Object[] array
+(def a (int-array 4))
+(aset a 2 10) ;; => 10
+(map identity a) ;; => (0 0 10 0)
+
+;; To iterate over java arrays there exists a macro for each map and reduce functions
+(def an-array (int-array 10))
+(map identity
+     (amap an-array index ret (+ (int 1) (aget an-array index)))) ;; => (1 1 1 1 1 ...)
