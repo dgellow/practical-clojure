@@ -2,7 +2,7 @@
 
 ;; sequences are a common programming interface that generalizes behavior common to all collections
 
-;; exemple with first and rest function applied on different collection type
+;; exemple with the functions first and rest applied on different collection type
 (first '(1 2 3))
 
 (first [1 2 3])
@@ -16,7 +16,7 @@
 (rest [1 2 3])
 
 
-;; exemple of common behavior with different type
+;; exemple of common behavior with different types
 (defn side-effect-to-all
   [f coll]
   (loop [c coll]
@@ -38,7 +38,7 @@
 (println-to-all "String" "123"))
 
 
-;; cons can be use to __construct__ a sequence giving it a first/rest pair
+;; cons can be use to __construct__ a sequence by giving it a first/rest pair
 (cons 4 '(1 2 3))
 ;; => (4 1 2 3)
 ;;     | |___|
