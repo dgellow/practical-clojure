@@ -1,6 +1,6 @@
 (ns practical-clojure.8-metadata)
 
-;; Metadatas be attached to any symbol or Clojure's built-in data structures
+;; Metadatas can be attached to any symbol or Clojure's built-in data structures
 
 ;; By default metadatas are note printed at the REPL.
 (set! *print-meta* true)
